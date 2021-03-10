@@ -13,9 +13,11 @@ export class CourseService {
   }
 
   add(course: Course) {
-    console.log(course);
     this.http.put(Config.baseUrl + this.url + '/add', course).subscribe(r => {
-      console.log(r);
     });
+  }
+
+  getAll() {
+    return this.http.get<Course[]>(Config.baseUrl + this.url + '/all');
   }
 }

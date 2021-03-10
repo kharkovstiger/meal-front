@@ -1,36 +1,102 @@
-<form class="example-form">
-  <mat-form-field class="example-full-width">
-    <input matInput name="name" placeholder="Name" [(ngModel)]="course.name">
-  </mat-form-field>
+<div class="addcourse">
+  <form class="example-form">
+    <mat-form-field class="example-full-width">
+      <input matInput name="name" placeholder="Name" [(ngModel)]="course.name">
+    </mat-form-field>
 
-  <mat-form-field class="example-full-width">
-    <input matInput type="number" name="calories" placeholder="Calories" [(ngModel)]="course.calories">
-  </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <input matInput type="number" name="calories" placeholder="Calories" [(ngModel)]="course.calories">
+    </mat-form-field>
 
-  <mat-form-field class="example-full-width">
-    <input matInput type="number" name="fats" placeholder="Fats" [(ngModel)]="course.fats">
-  </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <input matInput type="number" name="protein" placeholder="Protein" [(ngModel)]="course.protein">
+    </mat-form-field>
 
-  <mat-form-field class="example-full-width">
-    <input matInput type="number" name="protein" placeholder="Protein" [(ngModel)]="course.protein">
-  </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <input matInput type="number" name="fats" placeholder="Fats" [(ngModel)]="course.fats">
+    </mat-form-field>
 
-  <mat-form-field class="example-full-width">
-    <input matInput type="number" name="carbs" placeholder="Carbs" [(ngModel)]="course.carbs">
-  </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <input matInput type="number" name="carbs" placeholder="Carbs" [(ngModel)]="course.carbs">
+    </mat-form-field>
 
-  <mat-form-field class="example-full-width">
-    <mat-label>Type</mat-label>
-    <mat-select name="type" [(ngModel)]="course.type">
-      <mat-option *ngFor="let type of types" [value]="type">
-        {{type}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <mat-label>Type</mat-label>
+      <mat-select name="type" [(ngModel)]="course.type">
+        <mat-option *ngFor="let type of types" [value]="type">
+          {{type}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
 
-  <mat-form-field class="example-full-width">
-    <textarea matInput name="recipe" placeholder="Recipe" [(ngModel)]="course.recipe"></textarea>
-  </mat-form-field>
+    <mat-form-field class="example-full-width">
+      <textarea matInput name="recipe" placeholder="Recipe" [(ngModel)]="course.recipe"></textarea>
+    </mat-form-field>
 
-  <button mat-button color="primary" (click)="add()">add</button>
-</form>
+    <button mat-button color="primary" (click)="add()">add</button>
+  </form>
+</div>
+
+<div class="courses">
+  <div class="example-loading-shade"
+       *ngIf="isLoadingResults">
+    <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+  </div>
+  <div class="example-table-container">
+    <table mat-table [dataSource]="courses" class="example-table" matSort matSortActive="name" matSortDisableClear
+           matSortDirection="desc" multiTemplateDataRows>
+
+      <ng-container matColumnDef="{{column}}" *ngFor="let column of columns" >
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{column}} </th>
+        <td mat-cell *matCellDef="let element">
+          {{element[column]}}
+        </td>
+      </ng-container>
+
+<!--      &lt;!&ndash; add Column &ndash;&gt;-->
+<!--      <ng-container matColumnDef="add" sticky>-->
+<!--        <th mat-header-cell *matHeaderCellDef></th>-->
+<!--        <td mat-cell *matCellDef="let element">-->
+<!--          <button mat-raised-button color="accent"-->
+<!--                  (click)="add(element.id)">{{element.inDB ? "Update" : "Add"}}-->
+<!--          </button>-->
+<!--        </td>-->
+<!--      </ng-container>-->
+
+      <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+<!--      <ng-container matColumnDef="expandedDetail">-->
+<!--        <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">-->
+<!--          <div class="example-element-detail"-->
+<!--               [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">-->
+<!--            <a href="{{getBBPlayerLink(element)}}">Link to BB</a>-->
+<!--            <div>Last 10 ups:</div>-->
+<!--            <div *ngFor="let up of element.lastUps | keyvalue">-->
+<!--              {{up.key}} : <span *ngFor="let val of up.value">{{val+',  '}}</span>-->
+<!--            </div>-->
+<!--            <div>bio: {{element.bio}}</div><button mat-raised-button color="accent"-->
+<!--                                                   (click)="openBio()">{{element.bio ? "Update" : "Add"}}</button>-->
+<!--            <br>-->
+<!--            <div class="text-skill-container">-->
+<!--              <div *ngFor="let skill of skillOrder; let odd=odd" class="text-skill">-->
+<!--                {{skill}}: <span [style.color]="skillNames[element.skills[skill]][1]">{{skillNames[element.skills[skill]][0]}}</span>-->
+<!--                <br *ngIf="odd">-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <button mat-raised-button color="accent" (click)="remove(element.id)">Remove from DB</button>-->
+<!--          </div>-->
+<!--        </td>-->
+<!--      </ng-container>-->
+
+      <tr mat-header-row *matHeaderRowDef="columns; sticky: true"></tr>
+      <tr mat-row *matRowDef="let element; columns: columns;"
+          class="example-element-row"></tr>
+<!--          [class.example-expanded-row]="expandedElement === element"-->
+<!--          (click)="expandedElement = type=='my' ? null : expandedElement === element ? null : element"></tr>-->
+<!--      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>-->
+    </table>
+  </div>
+
+  <mat-paginator [length]="resultsLength" [pageSizeOptions]="[10, 25, 50, 100]"
+                 showFirstLastButtons></mat-paginator>
+
+</div>

@@ -1,16 +1,16 @@
 import {ChangeDetectorRef, Component, ViewChild} from '@angular/core';
-import {Course, CourseType} from '../../models';
-import {CourseService} from '../../services';
-import {MatTableDataSource} from '@angular/material/table';
-import {MatSort} from '@angular/material/sort';
-import {MatPaginator} from '@angular/material/paginator';
-import {merge, Observable, Subscription} from 'rxjs';
-import {catchError, map, startWith, switchMap, timeout} from 'rxjs/operators';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {NavigationEnd, Router} from '@angular/router';
+import {Router} from '@angular/router';
+import {Meal} from '../../models';
+import {MatTableDataSource} from '@angular/material/table';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatSort} from '@angular/material/sort';
+import {merge, Observable, Subscription} from 'rxjs';
+import {MealService} from '../../services/meal.service';
+import {catchError, map, startWith, switchMap} from 'rxjs/operators';
 
 @Component({
-  templateUrl: 'course.component.html',
+  templateUrl: 'meal.component.html',
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({height: '0px', minHeight: '0', display: 'none'})),
@@ -19,37 +19,23 @@ import {NavigationEnd, Router} from '@angular/router';
     ]),
   ],
 })
-export class CourseComponent {
-  types: (string | CourseType)[] = Object.values(CourseType);
-  course: Course;
-  courses: MatTableDataSource<Course>;
+export class MealComponent {
+  meals: MatTableDataSource<Meal>;
   isLoadingResults: boolean;
   resultsLength: number;
-  columns: string[] = ['name', 'calories', 'protein', 'fats', 'carbs'];
+  columns: string[] = ['calories', 'protein', 'fats', 'carbs', 'breakfast', 'snack', 'dinner', 'snack2', 'supper'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   private readonly navigationSubscription: Subscription;
 
-  constructor(private courseService: CourseService, private changeDetectorRefs: ChangeDetectorRef, private router: Router) {
-    this.course = new Course();
-    this.navigationSubscription = this.router.events.subscribe((e: any) => {
-      // If it is a NavigationEnd event re-initalise the component
-      if (e instanceof NavigationEnd) {
-        setTimeout(() => this.initTable(), 1000);
-      }
-    });
+  constructor(private mealService: MealService, private changeDetectorRefs: ChangeDetectorRef, private router: Router) {
   }
 
-  add() {
-    this.courseService.add(this.course);
-    this.course = new Course();
+  getMeals(calories: number, protein: number, fats: number, carbs: number): Observable<Meal[]> {
+    return this.mealService.getMeals(calories, protein, fats, carbs);
   }
 
-  getAll(): Observable<Course[]> {
-    return this.courseService.getAll();
-  }
-
-  private initTable() {
+  private initTable(calories: number, protein: number, fats: number, carbs: number) {
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
     this.isLoadingResults = true;
@@ -59,7 +45,7 @@ export class CourseComponent {
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
-          return this.getAll();
+          return this.getMeals(calories, protein, fats, carbs);
         }),
         map(data => {
           // Flip flag to show that loading has finished.
@@ -70,13 +56,13 @@ export class CourseComponent {
         }),
         catchError(() => {
           this.isLoadingResults = false;
-          return new Observable<Course[]>();
+          return new Observable<Meal[]>();
         })
       ).subscribe(data => {
         console.log(data);
-        this.courses = new MatTableDataSource(data);
-        this.courses.paginator = this.paginator;
-        this.courses.sort = this.sort;
+        this.meals = new MatTableDataSource(data);
+        this.meals.paginator = this.paginator;
+        this.meals.sort = this.sort;
         this.changeDetectorRefs.detectChanges();
       }
     );
@@ -90,5 +76,9 @@ export class CourseComponent {
     if (this.navigationSubscription) {
       this.navigationSubscription.unsubscribe();
     }
+  }
+
+  show(calories: number, protein: number, fats: number, carbs: number) {
+    this.initTable(calories, protein, fats, carbs);
   }
 }

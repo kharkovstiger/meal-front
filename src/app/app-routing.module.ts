@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import {CourseComponent} from './components';
+import {CourseComponent, MainComponent, MealComponent} from './components';
 
 
 const routes: Routes = [
-  {path: '', component: CourseComponent},
-  { path: '**', redirectTo: '' }
+  {path: '', component: MainComponent},
+  {path: 'courses', component: CourseComponent},
+  {path: 'meals', component: MealComponent},
+  {path: '**', redirectTo: ''}
 ];
 
 @NgModule({
