@@ -23,7 +23,7 @@ export class MealComponent {
   meals: MatTableDataSource<Meal>;
   isLoadingResults: boolean;
   resultsLength: number;
-  columns: string[] = ['calories', 'protein', 'fats', 'carbs', 'breakfast', 'snack', 'dinner', 'snack2', 'supper'];
+  columns: string[] = ['calories', 'protein', 'fats', 'carbs', 'breakfast', 'snack', 'dinner', 'snack2', 'supper', 'additions'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   private readonly navigationSubscription: Subscription;
@@ -83,7 +83,9 @@ export class MealComponent {
   }
 
   getFieldValue(element: any) {
-    if (typeof element === 'object') {
+    if (Array.isArray(element)) {
+      return Array.from(element, e => e.name);
+    } else if (typeof element === 'object') {
       return element.name;
     } else {
       return element;

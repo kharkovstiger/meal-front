@@ -14,5 +14,6 @@ export enum CourseType {
   SNACK = 'SNACK',
   DINNER = 'DINNER',
   SNACK_2 = 'SNACK_2',
-  SUPPER = 'SUPPER'
+  SUPPER = 'SUPPER',
+  ADDITION = 'ADDITION'
 }

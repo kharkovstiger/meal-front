@@ -6,6 +6,7 @@ export class Meal {
   dinner: Course;
   snack2: Course;
   supper: Course;
+  additions: Course[];
   calories: number;
   fats: number;
   protein: number;
