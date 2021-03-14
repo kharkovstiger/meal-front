@@ -14,7 +14,7 @@
       <ng-container matColumnDef="{{column}}" *ngFor="let column of columns" >
         <th mat-header-cell *matHeaderCellDef mat-sort-header> {{column}} </th>
         <td mat-cell *matCellDef="let element">
-          {{element[column]}}
+          {{getFieldValue(element[column])}}
         </td>
       </ng-container>
 

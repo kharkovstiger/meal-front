@@ -81,4 +81,12 @@ export class MealComponent {
   show(calories: number, protein: number, fats: number, carbs: number) {
     this.initTable(calories, protein, fats, carbs);
   }
+
+  getFieldValue(element: any) {
+    if (typeof element === 'object') {
+      return element.name;
+    } else {
+      return element;
+    }
+  }
 }
