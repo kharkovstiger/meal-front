@@ -83,7 +83,9 @@ export class MealComponent {
   }
 
   getFieldValue(element: any) {
-    if (Array.isArray(element)) {
+    if (element === null) {
+      return '';
+    } else if (Array.isArray(element)) {
       return Array.from(element, e => e.name);
     } else if (typeof element === 'object') {
       return element.name;
